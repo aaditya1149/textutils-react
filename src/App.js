@@ -1,25 +1,64 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import About from './components/About';
+import Navbar from './components/Navbar';
+import TextForm from './components/TextForm';
+import Alert from './components/Alert';
+
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 
 function App() {
+  const [texts, settexts] = useState("Enable DarkMode")
+
+  const [alert, setalert] = useState(null)
+  const showAlert =(message, type) =>{
+    setalert({
+      msg : message,
+      type : type
+    })
+  }
+  setTimeout(() => {
+    setalert(null);
+  }, 4000);
+
+  const [mode, setmode] = useState("light")
+  const toggleMode =() => {
+    if (mode === "light"){
+      setmode("dark");
+      settexts("Enable LightMode");
+      document.body.style.backgroundColor = "#100324f0";
+      showAlert("Dark Mode Activated", "success");
+    }
+    else {
+      setmode("light");
+      settexts("Enable DarkMode");
+      document.body.style.backgroundColor = "white";
+      showAlert("Light Mode Activated", "success");
+
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+    <Router>
+    <Navbar title = "TextUtils" mode ={mode} toggleMode = {toggleMode} texts = {texts} />
+    <Alert alert = {alert}/>
+
+    <div className="container my-3" >
+    <Routes>      {/* Switches */}
+    <Route path="/about" element = {<About />} />
+      
+ 
+
+    <Route path="/" element= {<TextForm showAlert={showAlert} heading ="Enter your text below to analyze." mode ={mode}/>} />
+       
+    </Routes>
     </div>
+
+    </Router>
+   </>
   );
 }
 
 export default App;
+
